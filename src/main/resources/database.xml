@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/beans" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	 <bean id="miaCikuDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close" >
+		<property name="url">
+			<value>${ds.mia.ciku.url}</value>
+		</property>
+		<property name="username">
+			<value>${ds.mia.ciku.username}</value>
+		</property>
+		<property name="password">
+			<value>${ds.mia.ciku.password}</value>
+		</property>
+		<property name="maxActive">
+			<value>${ds.maxConnection} </value>
+		</property>
+		<property name="initialSize">
+			<value>${ds.initialSize} </value>
+		</property>
+		<property name="maxWait">
+			<value>${ds.maxWait} </value>
+		</property>
+		<property name="minIdle">
+			<value>${ds.initialSize} </value>
+		</property>
+		<property name="filters" value="stat" />
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="true" />
+		<property name="testOnReturn" value="false" />
+		<property name="validationQuery" value=" SELECT 1"/>
+		<property name="poolPreparedStatements" value="false" />
+	</bean>
+	
+	 <bean id="miaCikuSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="miaCikuDataSource" />
+		<property name="mapperLocations" value="classpath:com/mia/ciku/mapper/*.xml" />
+	</bean>
+	<bean id="miaCikuMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.mia.ciku.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="miaCikuSqlSessionFactory" />
+	</bean>
+	<bean id="miaCikuTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="miaCikuDataSource" />
+	</bean> 
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>

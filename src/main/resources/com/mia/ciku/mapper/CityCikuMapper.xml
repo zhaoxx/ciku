@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mia.ciku.mapper.CityCikuMapper">
+    <resultMap id="BaseResultMap" type="com.mia.ciku.model.CityCiku">
+        <result column="id" property="id"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="city_info_url" property="cityInfoUrl"/>
+        <result column="city_address_url" property="cityAddressUrl"/>
+    </resultMap>
+    
+    <insert id="saveCityCikuInfoList" >
+        INSERT INTO
+            city_ciku
+            (
+            province,
+            city,
+            city_info_url,
+            city_address_url,
+            create_time
+         ) 
+         values
+         <foreach collection="cityCikuInfoList" item="item" open="" close="" separator=",">
+         (
+            <choose>
+                <when test="item.province != null" >
+                    #{item.province}
+                </when>
+                  <otherwise>NULL</otherwise>
+            </choose>
+            ,
+            <choose>
+                <when test="item.city != null" >
+                    #{item.city}
+                </when>
+                  <otherwise>NULL</otherwise>
+            </choose>
+            ,
+            <choose>
+                <when test="item.cityInfoUrl != null" >
+                    #{item.cityInfoUrl}
+                </when>
+                  <otherwise>NULL</otherwise>
+            </choose>
+            ,
+            <choose>
+                <when test="item.cityAddressUrl != null" >
+                    #{item.cityAddressUrl}
+                </when>
+                  <otherwise>NULL</otherwise>
+            </choose>
+            ,
+            now()
+            )
+        </foreach>
+    </insert>
+    
+    <select id="listCityCiku" resultMap="BaseResultMap">
+        SELECT id,province,
+            city,
+            city_info_url,
+            city_address_url
+        FROM city_ciku
+    </select>
+</mapper>
